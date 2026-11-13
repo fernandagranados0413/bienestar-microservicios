@@ -1,79 +1,80 @@
-# PrestaDeporte: microservicios con Docker
+# Wellness Microservices: sports equipment loans with Docker
 
-Demo técnica del proyecto de **préstamo de balones e implementos deportivos de Bienestar Universitario**.
-Dos microservicios en Java (Spring Boot) que se ejecutan en contenedores con Docker Compose.
+Technical demo for the **sports equipment loan service of University Wellness**
+(balls and other sports equipment). Two Java (Spring Boot) microservices run in
+containers orchestrated with Docker Compose.
 
-## Problemática
+## Problem
 
-El servicio de préstamo de implementos deportivos está poco aprovechado: según la encuesta realizada,
-hay desconocimiento del servicio y se señalan como aspectos por mejorar la disponibilidad de los
-implementos y los horarios. Esta demo implementa una versión mínima de la API REST de consulta de
-disponibilidad.
+The equipment loan service is under-used. According to the survey carried out
+for the project, many students do not know the service, and they point to
+equipment availability and opening hours as aspects to improve. This demo
+implements a minimal version of the REST API for availability lookups.
 
-## Arquitectura
+## Architecture
 
-| Microservicio | Puerto | Función |
+| Microservice | Port | Role |
 |---|---|---|
-| `implementos-ms` (proveedor) | 8088 | API REST con la lista de implementos y su disponibilidad (JSON) |
-| `dashboard-prestamos-ms` (cliente) | 8089 | Dashboard web que consume la API del proveedor |
+| `equipment-ms` (provider) | 8088 | REST API with the equipment list and availability (JSON) |
+| `loans-dashboard-ms` (client) | 8089 | Web dashboard that consumes the provider API |
 
-Los dos contenedores se comunican dentro de la red `bienestar-net`. El dashboard encuentra al proveedor
-por su nombre de servicio (`implementos-bienestar`).
+Both containers talk to each other inside the `wellness-net` network. The
+dashboard finds the provider by its service name (`equipment-service`).
 
-## Requisitos
+## Requirements
 
-- Java 17 o superior
-- Maven 3.9 o superior
+- Java 17 or higher
+- Maven 3.9 or higher
 - Docker Desktop
 
-## Ejecución
+## Run
 
 ```bash
-cd implementos-ms
+cd equipment-ms
 mvn clean package
 cd ..
-cd dashboard-prestamos-ms
+cd loans-dashboard-ms
 mvn clean package
 cd ..
 docker compose up --build -d
 ```
 
 - Dashboard: http://localhost:8089/
-- API: http://localhost:8088/api/implementos
-- Filtro por deporte: http://localhost:8088/api/implementos?deporte=Voleibol
-- Por identificador: http://localhost:8088/api/implementos/3
+- API: http://localhost:8088/api/equipment
+- Filter by sport: http://localhost:8088/api/equipment?sport=Volleyball
+- By id: http://localhost:8088/api/equipment/3
 
-Para detener y eliminar los contenedores:
+To stop and remove the containers:
 
 ```bash
 docker compose down
 ```
 
-## Prueba de interconexión
+## Interconnection test
 
 ```bash
-docker compose stop implementos-bienestar    # el dashboard muestra "fuera de línea"
-docker compose start implementos-bienestar   # el dashboard vuelve a mostrar los datos
+docker compose stop equipment-service    # the dashboard shows "offline"
+docker compose start equipment-service   # the dashboard shows the data again
 ```
 
-## Estructura
+## Structure
 
 ```
 .
 ├── docker-compose.yml
-├── implementos-ms/            # proveedor (puerto 8088)
-└── dashboard-prestamos-ms/    # cliente (puerto 8089)
+├── equipment-ms/          # provider (port 8088)
+└── loans-dashboard-ms/    # client (port 8089)
 ```
 
-## Relación con el Product Backlog
+## Relation to the Product Backlog
 
-- API REST propia (backend): `implementos-ms`
-- PD-INV-003: consulta de disponibilidad por deporte
-- PD-INF-002: información del servicio en un solo lugar
+- Own REST API (backend): `equipment-ms`
+- PD-INV-003: availability lookup by sport
+- PD-INF-002: service information in a single place
 
-Los datos son de ejemplo y están en memoria. Las reservas, los códigos QR, las notificaciones y los
-reportes corresponden a los siguientes sprints del backlog.
+The data is sample data kept in memory. Reservations, QR codes, notifications
+and reports belong to the next sprints of the backlog.
 
-## Autores
+## Authors
 
-Fernanda Granados, Sistemas Operativos y Universidad de Cundinamarca .
+Fernanda Granados, Operating Systems, Universidad de Cundinamarca.
