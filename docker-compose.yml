@@ -1,0 +1,29 @@
+services:
+  # 1. Servicio Proveedor (implementos deportivos)
+  implementos-bienestar:
+    build: ./implementos-ms
+    container_name: implementos-bienestar-container
+    hostname: implementos-bienestar   # CLAVE: nombre que usa el dashboard
+    ports:
+      - "8088:8088"
+    networks:
+      - bienestar-net
+
+  # 2. Servicio Cliente (dashboard de préstamos)
+  dashboard-bienestar:
+    build: ./dashboard-prestamos-ms
+    container_name: dashboard-bienestar-container
+    hostname: dashboard-bienestar
+    environment:
+      # Reemplaza implementos.service.url de application.properties
+      - IMPLEMENTOS_SERVICE_URL=http://implementos-bienestar:8088
+    ports:
+      - "8089:8089"                   # Puerto accesible desde el navegador
+    networks:
+      - bienestar-net
+    depends_on:
+      - implementos-bienestar         # El dashboard arranca después del proveedor
+
+networks:
+  bienestar-net:
+    driver: bridge
